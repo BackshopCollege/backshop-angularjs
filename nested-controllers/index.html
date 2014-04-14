@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="utf-8">
+    <title> AngularJS Backshop College </title>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.16.0-rc-1/build/cssreset/cssreset-min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  </head>
+
+  <style type="text/css">
+    * { padding-left: 10px; }
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+        display: none !important;
+    }
+  </style>
+
+  <body>
+
+    <div class="page-header">
+      <h1> AngularJS <small> backshop college </small></h1>
+    </div>
+
+
+    <div class="container">
+      <div class="row">
+        
+        <div ng-app id='app' ng-cloak >
+          
+          <div class="panel panel-default">
+            
+            <section id='data-binding' data-lesson='2' data-lesson-name='controllers' ng-controller='MainController'>
+              
+              <div ng-controller='MainController'>
+                <button ng-click='klass()' class='btn btn-{{css}}'> GREEN </button>
+
+                <div ng-controller='NestedController'>
+                 <button ng-click='klass()' class='btn btn-{{css}}'> BLUE </button>
+
+                  <div ng-controller='NestedNestedController'>
+                    <button ng-click='klass()' class='btn btn-{{css}}'> RED </button>
+                  </div>
+                </div>
+
+
+
+
+              </div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+     </div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//code.angularjs.org/1.2.16/angular.js"></script>
+
+    <script>
+
+      function MainController($scope) {
+        $scope.css = 'default';
+
+        $scope.klass = function() {
+          $scope.css = 'success';
+        }
+      }
+
+      function NestedController($scope) {
+
+        $scope.klass = function() {
+          $scope.css = 'primary';
+        }
+      }
+
+      function NestedNestedController($scope) {
+        $scope.klass = function() {
+          $scope.css = 'danger';
+        }
+      }
+
+
+
+    </script>
+
+  </body>
+</html>
