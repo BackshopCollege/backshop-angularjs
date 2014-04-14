@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="utf-8">
+    <title> AngularJS Backshop College </title>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.16.0-rc-1/build/cssreset/cssreset-min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  </head>
+
+  <style type="text/css">
+      * { padding-left: 10px; }
+          [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+          display: none !important;
+       }
+
+      .animate-switch-container {
+        position:relative;
+        background:white;
+        border:1px solid black;
+        height:40px;
+        overflow:hidden;
+      }
+
+      .animate-switch {
+        padding:10px;
+      }
+
+      .animate-switch.ng-animate {
+        -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+        transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+
+        position:absolute;
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+      }
+
+      .animate-switch.ng-leave.ng-leave-active,
+      .animate-switch.ng-enter {
+        top:-50px;
+      }
+      .animate-switch.ng-leave,
+      .animate-switch.ng-enter.ng-enter-active {
+        top:0;
+      }
+
+    </style>
+
+  <body>
+
+    <div class="page-header">
+      <h1> AngularJS <small> backshop college </small></h1>
+    </div>
+
+
+    <div class="container">
+      <div class="row">
+        
+        <div ng-app='college' id='app' ng-cloak ng-controller='AppController' >
+          <div class="panel panel-default">
+            <input ng-model='current_user.name'> </input>
+            <select ng-model="current_user.accessLevel" ng-options="acl.name for acl in accessLevels">
+              <option value="">-- choose your ACL --</option>
+            </select>
+
+            <section ng-controller='HeaderController'>
+              {{ current_user.name }} - {{ current_user.location }}
+            </section>
+
+            <section ng-controller='DashBoardController'>
+              
+              <div class="animate-switch-container" ng-switch on="current_user.accessLevel.name">
+                <div class="animate-switch" ng-switch-when="Admin"> You are the real ADMIN MOTHER FUCKER.</div>
+                <div class="animate-switch" ng-switch-when="Nurse"> Hello Nurse ;)</div>
+                <div class="animate-switch" ng-switch-when="Doctor"> Welcome Doctor </div>
+                <div class="animate-switch" ng-switch-default> DEFAULT </div>
+              </div>
+
+            </section>
+          
+          </div>
+        </div>
+     </div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//code.angularjs.org/1.2.16/angular.js"></script>
+
+    <script>
+      var module = angular.module('college', []);
+      module.controller('AppController', ['$scope', 'AppContext', AppController]);
+
+      function AppController($scope, AppContext) {
+        $scope.init = function() {
+          AppContext.currentUser({ name: 'Thiago Dantas', id: 123, location: 'linkedcare', accessLevel: {name: 'Admin'} });
+          $scope.current_user = AppContext.getCurrentUser();
+          $scope.accessLevels = [ {name: 'Doctor'}, {name: 'Nurse'} , {name: 'Admin'}];
+        }
+        $scope.init();
+      }
+
+      module.controller('HeaderController', ['$scope', 'AppContext', HeaderController]);
+      function HeaderController($scope, AppContext) {
+        $scope.current_user = AppContext.getCurrentUser();
+      }
+
+      module.controller('DashBoardController', ['$scope', 'AppContext', DashBoardController]);      
+      function DashBoardController($scope, AppContext) {
+        $scope.current_user = AppContext.getCurrentUser();
+      }
+
+      module.service('AppContext', function() {
+        this.currentUser = function(user) {
+          this._current_user = user;
+        }
+
+        this.getCurrentUser = function(){
+          return this._current_user;
+        }
+
+      });
+
+
+
+    </script>
+
+  </body>
+</html>
