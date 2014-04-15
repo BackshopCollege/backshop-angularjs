@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="utf-8">
+    <title> AngularJS Backshop College </title>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.16.0-rc-1/build/cssreset/cssreset-min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  </head>
+
+  <style type="text/css">
+    .loading {
+      background: url('/ajax-loader.gif'); 
+      background-repeat: no-repeat;
+      background-position: top center;
+      width: 100%;
+      height: 100px;
+    }
+
+    .loading * {
+      display: none;
+    }
+
+  </style>
+
+  <body>
+
+    <div class="page-header">
+      <h1> AngularJS <small> backshop college </small></h1>
+    </div>
+
+
+    <div class="container" ng-app='college'>
+      <div class="row">
+        <div ng-controller='GreetingsController' ng-class="{ 'loading': !preFetched }">
+          <button ng-click='changeTemplate("holmes.dyn.html")'> Change-Me !</button>
+          <div ng-include src='template'> </div>
+        </div>
+      </div>
+
+      <script type="text/ng-template" id='hello.local.html'>
+        Im inside a template {{ msg }}
+      </script>
+    </div>
+
+    <div id='manual-bootstrap' ng-controller='ManualController'>
+      {{ manualMsg }}
+    </div>
+
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//code.angularjs.org/1.2.16/angular.js"></script>
+
+    <script>
+
+      var module = angular.module('college', []);
+      module.run(function($rootScope, $timeout) {
+        $rootScope.preFetched = false;
+        
+        $timeout(function() {
+          $rootScope.preFetched = true;
+        }, 1500);
+
+      });
+
+      module.run(function($templateCache) {
+        if(!$templateCache.get('holmes.dyn.html')) {
+          $templateCache.put('holmes.dyn.html', '<div> Hello from Cache  {{ msg }}</div>');
+        }
+      });
+
+      module.controller('GreetingsController', function($scope) {
+        $scope.template = 'hello.local.html';
+
+        $scope.changeTemplate = function(tpl){
+          $scope.template = tpl;
+        }
+
+        $scope.msg = 'Welcome Mr. Holmes';
+      });
+
+      //-------------------- Manual Bootstrap -------------------------//
+
+      var manual = angular.module('ManualApp',[]);
+      manual.controller('ManualController', function($scope){
+        $scope.manualMsg = 'Hello From Manual'
+      })
+
+      angular.element(document).ready(function() {
+        angular.bootstrap(angular.element('#manual-bootstrap'), ['ManualApp']);
+
+      });
+      
+    </script>
+
+  </body>
+</html>
