@@ -33,6 +33,12 @@
     <div class="container" ng-app='college'>
       <div class="row">
         <div ng-controller='GreetingsController' ng-class="{ 'loading': !preFetched }">
+          <br>
+          Person: {{ person() }} 
+          <br>
+          <button ng-click="click('NewName')"> NewName </button>
+          <br>
+
           <button ng-click='changeTemplate("holmes.dyn.html")'> Change-Me !</button>
           <div ng-include src='template'> </div>
         </div>
@@ -45,6 +51,11 @@
 
     <div id='manual-bootstrap' ng-controller='ManualController'>
       {{ manualMsg }}
+
+      <br>
+      Person: {{ person() }} 
+      <br>
+      <button ng-click="click('OldName')"> OldName </button>
     </div>
 
 
@@ -54,7 +65,56 @@
 
     <script>
 
-      var module = angular.module('college', []);
+    // Shared Service //
+
+    angular.module('PersonService', []).service('Person', function($rootScope, $window){
+      $window.scopes = $window.scopes || [];
+      $window.scopes.push($rootScope);
+
+      if (!!$window.sharedService) return $window.sharedService;
+      var person = { name: 'thiago' };
+
+      $window.sharedService = {
+        
+        set: function(_person) {
+          person = _person;
+
+          angular.forEach($window.scopes, function(scope) {
+            if(!scope.$$phase) scope.$apply();
+          });
+
+        },
+
+        get: function() {
+          return person;
+        }
+      }
+
+      return $window.sharedService;
+
+    });
+
+
+    //-------------------- Manual Bootstrap -------------------------//
+
+      var manual = angular.module('ManualApp',['ng', 'PersonService']);
+      manual.controller('ManualController', function($scope, $window, Person){
+        $scope.manualMsg = 'Hello From Manual';
+        $scope.person = Person.get;
+
+        $scope.click = function(newName) {
+          console.log('clicking')
+          Person.set({name: newName});
+        }
+
+      })
+
+      angular.element(document).ready(function() {
+        angular.bootstrap(angular.element('#manual-bootstrap'), ['ManualApp']);
+      });
+
+    //-------------------- Automatic Bootstrap -------------------------//
+      var module = angular.module('college', ['PersonService']);
       module.run(function($rootScope, $timeout) {
         $rootScope.preFetched = false;
         
@@ -70,28 +130,23 @@
         }
       });
 
-      module.controller('GreetingsController', function($scope) {
+      module.controller('GreetingsController', function($scope, $window, Person) {
         $scope.template = 'hello.local.html';
+        
+        $scope.person = Person.get;
+        $scope.click = function(newName) {
+          Person.set({name: newName});
+        }
 
-        $scope.changeTemplate = function(tpl){
+        $scope.changeTemplate = function(tpl) {
           $scope.template = tpl;
         }
 
         $scope.msg = 'Welcome Mr. Holmes';
       });
 
-      //-------------------- Manual Bootstrap -------------------------//
 
-      var manual = angular.module('ManualApp',[]);
-      manual.controller('ManualController', function($scope){
-        $scope.manualMsg = 'Hello From Manual'
-      })
 
-      angular.element(document).ready(function() {
-        angular.bootstrap(angular.element('#manual-bootstrap'), ['ManualApp']);
-
-      });
-      
     </script>
 
   </body>
