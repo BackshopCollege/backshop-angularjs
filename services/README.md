@@ -2,7 +2,7 @@
 
 ````
   git clone git@github.com:BackshopCollege/backshop-angularjs.git
-  cd backshop-angular/controllers
+  cd backshop-angular/services
   npm install
   npm start
   

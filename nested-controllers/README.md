@@ -2,7 +2,7 @@
 
 ````
   git clone git@github.com:BackshopCollege/backshop-angularjs.git
-  cd backshop-angular/controllers
+  cd backshop-angular/nested-controllers
   npm install
   npm start
   
